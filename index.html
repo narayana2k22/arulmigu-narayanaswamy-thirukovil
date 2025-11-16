@@ -16,30 +16,6 @@
       body * { visibility: visible; }
     }
     <style>
-    /* PRINT FOOTER FIX */
-.print-footer {
-  display: none;
-}
-
-@media print {
-
-  .print-footer {
-    display: block !important;
-    position: fixed !important;
-    bottom: -10px;        /* pushes footer more DOWN */
-    left: 0;
-    width: 100%;
-    text-align: center;
-    padding: 5px 0;
-    font-size: 13px;
-  }
-
-  @page {
-    margin-bottom: 20px !important;   /* reduces empty space */
-    margin-top: 20px !important;
-  }
-}
-
   body { font-family: 'Inter', sans-serif; }
   [lang="ta"] body, [lang="ta"] button, [lang="ta"] input, [lang="ta"] textarea, 
   [lang="ta"] h1, [lang="ta"] h2, [lang="ta"] p, [lang="ta"] label { 
@@ -360,11 +336,7 @@
   </div>
 </div>
   
-<div id="print-footer" class="print-footer">
-  © Arulmigu Narayana Swamy Temple<br>
-  Created by Amuthavishnukumaran Srinivasan
-</div>
- 
+  <footer class="mt-6 text-center text-sm no-print">&copy; <span id="footer-year"></span> Arulmigu Narayana Swamy Templep<p>Created by Amuthavishnukumaran Srinivasan</p></footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- Firebase + App Logic -->
