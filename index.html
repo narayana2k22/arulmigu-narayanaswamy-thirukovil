@@ -15,24 +15,32 @@
     @media print {
       body * { visibility: visible; }
     }
-    <style>
-  body { font-family: 'Inter', sans-serif; }
-  [lang="ta"] body, [lang="ta"] button, [lang="ta"] input, [lang="ta"] textarea, 
-  [lang="ta"] h1, [lang="ta"] h2, [lang="ta"] p, [lang="ta"] label { 
-      font-family: 'Noto Sans Tamil', sans-serif; 
-  }
-  .glass-card { 
-      background: rgba(255,255,255,0.75); 
-      backdrop-filter: blur(8px); 
-      border-radius: 12px; 
-      padding: 1.25rem; 
-      box-shadow: 0 6px 18px rgba(0,0,0,0.12); 
-  }
-  .no-scrollbar::-webkit-scrollbar { display:none; } 
-  .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+    footer {
+  display: block !important;
+  visibility: visible !important;
+  position: relative !important;
+}
+   <style>
+body { font-family: 'Inter', sans-serif; }
+[lang="ta"] body, [lang="ta"] button, [lang="ta"] input, [lang="ta"] textarea, 
+[lang="ta"] h1, [lang="ta"] h2, [lang="ta"] p, [lang="ta"] label { 
+    font-family: 'Noto Sans Tamil', sans-serif; 
+}
+.glass-card { 
+    background: rgba(255,255,255,0.75); 
+    backdrop-filter: blur(8px); 
+    border-radius: 12px; 
+    padding: 1.25rem; 
+    box-shadow: 0 6px 18px rgba(0,0,0,0.12); 
+}
 
-  /* 🔥 MOVE THIS HERE (correct place) */
-  @media print {
+.no-scrollbar::-webkit-scrollbar { display:none; } 
+.no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
+
+/* ----------------------------------------------------------
+      PRINT MODE — CLEAN + WORKING
+----------------------------------------------------------- */
+@media print {
 
     nav,
     #scan-to-pay,
@@ -62,6 +70,12 @@
       position: relative !important;
     }
 
+    footer {
+      margin-top: 20px !important;
+      text-align: center !important;
+      font-size: 12px !important;
+    }
+
     #admin-view,
     #donor-content,
     #donor-count,
@@ -79,12 +93,21 @@
     td:last-child {
       display: none !important;
     }
-  }
-</style>
+}
+</style> 
 
   </style>
 </head>
 <body class="bg-orange-50 min-h-screen">
+
+  <body class="bg-orange-50 min-h-screen">
+
+<!-- SPLASH SCREEN ADD HERE -->
+<div id="splash-screen" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+  <img src="temple-photos/god.png" class="w-64 h-auto">
+</div>
+
+<div id="app" class="max-w-6xl mx-auto p-6">
 
 <div id="app" class="max-w-6xl mx-auto p-6">
   <header class="mb-6">
@@ -109,10 +132,36 @@
 
 <!-- Scan to Pay -->
 <div id="scan-to-pay" class="glass-card p-6 md:p-8 text-center">
-  <h3 class="text-xl font-bold mb-2" data-key="paymentTitle">Scan to Pay</h3>
-  <img src="QR.png" class="mx-auto rounded-lg shadow-lg w-80 h-auto" />
-  <p class="mt-3 text-sm" data-key="paymentInstructions">After payment, enter the UPI transaction ID in the form.<p>பணம் செலுத்திய பிறகு, படிவத்தில் UPI பரிவர்த்தனை ஐடியை உள்ளிடவும்.</p></p>
+
+  <h3 class="text-xl font-bold mb-2" data-key="paymentTitle">
+    Scan to Pay
+  </h3>
+
+  <!-- QR CODE -->
+  <img
+    src="QR.png"
+    alt="Temple UPI QR Code"
+    class="mx-auto rounded-lg shadow-lg w-80 h-auto"
+  />
+
+  <!-- Instructions -->
+  <p class="mt-3 text-sm" data-key="paymentInstructions">
+    After payment, enter the UPI transaction ID in the form.
+  </p>
+  <p class="text-sm">
+    பணம் செலுத்திய பிறகு, படிவத்தில் UPI பரிவர்த்தனை ஐடியை உள்ளிடவும்.
+  </p>
+
+  <!-- GPay / PhonePe Button -->
+  <a
+    href="upi://pay?pa=EzE0071735@CUB&pn=Arulmigu%20Narayana%20Swamy%20Temple&cu=INR"
+    class="mt-5 inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold"
+  >
+    💳 Pay using GPay / PhonePe
+  </a>
+
 </div>
+
 
 <!-- HOME PAGE -->
 <div id="home-page">
@@ -146,6 +195,29 @@
   <input id="transactionId" class="w-full p-2 border rounded-md" />
 </div>
 
+        <div class="border border-gray-300 rounded-lg p-3 bg-white shadow-sm">
+  
+  <label class="block font-medium mb-2">
+    Donation Purpose / Propose
+  </label>
+
+  <select 
+    id="purpose" 
+    required 
+    class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
+  >
+    <option value="" disabled selected>-- Select Purpose --</option>
+    <option value="Annadhanam">Annadhanam</option>
+    <option value="Pooja">Special Pooja</option>
+    <option value="Abhishekam">Abhishekam</option>
+    <option value="Temple Maintenance">Temple Maintenance</option>
+    <option value="General Donation">General Donation</option>
+  </select>
+
+</div>
+
+
+
       <!--  <div><label>UPI Transaction ID</label>
           <input id="transactionId" class="w-full p-2 border rounded-md" /></div> -->
 
@@ -154,6 +226,31 @@
 
         <button class="w-full bg-green-600 text-white py-4 rounded-lg">Submit Donation</button>
       </form>
+      
+      <!-- DONATION BILL / RECEIPT -->
+<div id="bill-section" class="hidden mt-6 glass-card">
+  <h2 class="text-2xl font-bold text-center mb-4">🧾 Donation Receipt</h2>
+
+  <div class="space-y-2 text-sm">
+    <p><b>Temple:</b> Arulmigu Narayana Swamy Temple</p>
+    <p><b>Donor Name:</b> <span id="b-name"></span></p>
+    <p><b>Address:</b> <span id="b-address"></span></p>
+    <p><b>Phone:</b> <span id="b-phone"></span></p>
+    <p><b>Email:</b> <span id="b-email"></span></p>
+    <p><b>Amount:</b> ₹<span id="b-amount"></span></p>
+    <p><b>Purpose:</b> <span id="b-purpose"></span></p>
+    <p><b>UPI Txn ID:</b> <span id="b-txn"></span></p>
+    <p><b>Date:</b> <span id="b-date"></span></p>
+  </div>
+
+  <div class="flex gap-3 mt-4 no-print">
+
+    <button onclick="downloadBill()" class="bg-green-600 text-white px-4 py-2 rounded">
+      ⬇ Download
+    </button>
+  </div>
+</div>
+
     </section>
 
     <!-- Explore More 3x2 Layout -->
@@ -163,9 +260,11 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
         <button id="go-to-photos-btn" class="py-5 rounded-lg bg-orange-500 text-white text-lg" data-key="templePhotos">🖼️Temple Photos📸</button>
+        <button id="go-to-videos-btn"class="py-5 rounded-lg bg-red-500 text-white text-lg">🎥 Temple Videos</button>
         <button id="go-to-events-btn" class="py-5 rounded-lg bg-orange-500 text-white text-lg" data-key="specialDays">✨ Special Days🪔</button>
 
         <button id="go-to-templeinfo-btn" class="py-5 rounded-lg bg-pink-600 text-white text-lg" data-key="templeInfoBtn">☎ Temple Info & Contact📞</button>
+        <button id="go-to-map-btn"class="py-5 rounded-lg bg-green-700 text-white text-lg">📍 Google Map</button>
         <button id="go-to-youtube-btn" class="py-5 rounded-lg bg-red-600 text-white text-lg">▶ YouTube</button>
 
         <button id="go-to-facebook-btn" class="py-5 rounded-lg bg-blue-700 text-white text-lg">📘 Facebook</button>
@@ -189,6 +288,21 @@
   </div>
 </div>
 
+    <!-- VIDEOS PAGE -->
+<div id="videos-page" class="hidden">
+  <div class="glass-card">
+    <div class="flex justify-between">
+      <h2 class="text-2xl font-bold">Temple Videos</h2>
+      <button class="back-home bg-gray-500 text-white px-3 py-2 rounded">Back</button>
+    </div>
+
+    <div id="video-gallery"
+      class="mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    </div>
+  </div>
+</div>
+
+    
 <!-- EVENTS PAGE -->
 <div id="events-page" class="hidden">
   <div class="glass-card">
@@ -339,6 +453,143 @@
   <footer class="mt-6 text-center text-sm no-print">&copy; <span id="footer-year"></span> Arulmigu Narayana Swamy Templep<p>Created by Amuthavishnukumaran Srinivasan</p></footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+/* -------------------------------------------------------
+   GITHUB STATIC TEMPLE PHOTOS (NO FIREBASE)
+-------------------------------------------------------- */
+const templePhotos = [
+  "temple-photos/photo1.1.png",
+  "temple-photos/photo1.2.png",
+  "temple-photos/photo1.png",
+  "temple-photos/photo2.png",
+  "temple-photos/photo3.png",
+  "temple-photos/photo4.png",
+  "temple-photos/photo5.png",
+  "temple-photos/photo6.png",
+  "temple-photos/photo7.png",
+  "temple-photos/photo8.png",
+  "temple-photos/photo9.png",
+  "temple-photos/photo10.png",
+  "temple-photos/photo11.png",
+  "temple-photos/photo12.png",
+  "temple-photos/photo13.png",
+  "temple-photos/photo14.png",
+  "temple-photos/photo15.png",
+  "temple-photos/photo16.png",
+  "temple-photos/photo17.png",
+  "temple-photos/photo18.png",
+  "temple-photos/photo19.png",
+  "temple-photos/photo20.png",
+  "temple-photos/photo21.png",
+  "temple-photos/photo22.png",
+  "temple-photos/photo23.png",
+  "temple-photos/photo24.png",
+  "temple-photos/photo25.png",
+  "temple-photos/photo26.png",
+  "temple-photos/photo27.png",
+  "temple-photos/photo28.png",
+  "temple-photos/photo29.png",
+  "temple-photos/photo30.png",
+  "temple-photos/photo31.png",
+  "temple-photos/photo32.png",
+  "temple-photos/photo33.png",
+  "temple-photos/photo34.png",
+  "temple-photos/photo35.png",
+  "temple-photos/photo36.png",
+  "temple-photos/photo37.png",
+  "temple-photos/photo38.png",
+  "temple-photos/photo39.png",
+  "temple-photos/photo40.png",
+  "temple-photos/photo41.png",
+  "temple-photos/photo42.png",
+  "temple-photos/photo43.png",
+  "temple-photos/photo44.png",
+  "temple-photos/photo45.png",
+  "temple-photos/photo46.png",
+  "temple-photos/photo47.png",
+  "temple-photos/photo48.png",
+  "temple-photos/photo49.png",
+  "temple-photos/photo50.png"
+];
+
+function loadTemplePhotos() {
+  const gallery = document.getElementById("main-gallery");
+  if (!gallery) return;
+  gallery.innerHTML = "";
+
+  templePhotos.forEach(src => {
+    const img = document.createElement("img");
+   img.src = src;
+img.style.cursor = "pointer";
+img.onclick = () => openImage(src);
+    img.className =
+      "w-full h-56 object-contain bg-white rounded-lg shadow p-2";
+    gallery.appendChild(img);
+  });
+}
+
+    // ================= VIDEO LIST =================
+const templeVideos = [
+  "temple-videos/video1.mp4",
+  "temple-videos/video2.mp4",
+  "temple-videos/video3.mp4",
+  "temple-videos/video4.mp4",
+  "temple-videos/video5.mp4",
+  "temple-videos/video6.mp4",
+  "temple-videos/video7.mp4",
+  "temple-videos/video8.mp4",
+  "temple-videos/video9.mp4",
+  "temple-videos/video10.mp4"
+];
+
+let currentVideoIndex = 0;
+
+    function loadTempleVideos() {
+  const gallery = document.getElementById("video-gallery");
+  if (!gallery) return;
+
+  gallery.innerHTML = "";
+
+  templeVideos.forEach((src, index) => {
+    const video = document.createElement("video");
+    video.src = src;
+    video.controls = true;
+    video.muted = true;
+    video.className =
+      "w-full h-56 object-cover bg-black rounded-lg shadow p-2 cursor-pointer";
+
+    video.onclick = () => openVideoByIndex(index);
+    gallery.appendChild(video);
+  });
+}
+
+
+document.getElementById("go-to-photos-btn").addEventListener("click", () => {
+  showPage("photos-page");
+  loadTemplePhotos();
+
+const purposeOptions = {
+  en: [
+    "-- Select Purpose --",
+    "Annadhanam",
+    "Temple Renovation",
+    "Festival Special Pooja",
+    "General Donation",
+    "Kumbabishekam Fund"
+  ],
+  ta: [
+    "-- நோக்கத்தை தேர்வு செய்யவும் --",
+    "அன்னதானம்",
+    "கோவில் திருப்பணி",
+    "திருவிழா சிறப்பு பூஜை",
+    "பொது நன்கொடை",
+    "கும்பாபிஷேகம் நிதி"
+  ]
+};
+  
+});
+</script>
+
 <!-- Firebase + App Logic -->
 <script type="module">
   // Hide scan to pay when admin logs in
@@ -393,11 +644,12 @@ function formatDate(dateString) {
 }
 
 function showPage(target) {
-  ["home-page", "photos-page", "events-page", "templeinfo-page"].forEach(id => {
+  ["home-page", "photos-page", "events-page", "templeinfo-page", "videos-page"].forEach(id => {
     document.getElementById(id).classList.add("hidden");
   });
   document.getElementById(target).classList.remove("hidden");
 }
+window.showPage = showPage;
 
 document.querySelectorAll(".back-home").forEach(btn =>
   btn.addEventListener("click", () => showPage("home-page"))
@@ -407,8 +659,16 @@ document.querySelectorAll(".back-home").forEach(btn =>
     EXPLORE BUTTONS
 -------------------------------------------------------- */
 document.getElementById("go-to-photos-btn").onclick = () => showPage("photos-page");
+  document.getElementById("go-to-videos-btn").onclick = () => {
+  showPage("videos-page");
+  loadTempleVideos();
+};
 document.getElementById("go-to-events-btn").onclick = () => showPage("events-page");
 document.getElementById("go-to-templeinfo-btn").onclick = () => showPage("templeinfo-page");
+
+  document.getElementById("go-to-map-btn").onclick = () => {
+  window.open("https://www.google.com/maps/place/Arulmigu+Narayana+Swamy+Temple/@9.602809,77.6745942,54m/data=!3m1!1e3!4m6!3m5!1s0x3b06d942c2cb3b7b:0xde661cf02086ed2!8m2!3d9.602832!4d77.674429!16s%2Fg%2F124ymzsg7?authuser=0&entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D","_blank");
+};
 
 document.getElementById("go-to-youtube-btn").onclick = () => {
   window.open(latestTempleInfo.youtube || "https://youtube.com", "_blank");
@@ -427,27 +687,48 @@ document.getElementById("go-to-instagram-btn").onclick = () => {
 -------------------------------------------------------- */
 document.getElementById("donation-form").addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const data = {
-    donorName: donorName.value,
+  donorName: donorName.value,
     address: address.value,
     phone: phone.value,
     email: email.value,
     amount: amount.value,
+    purpose: purpose.value,
     transactionId: transactionId.value,
     date: donationDate.value
   };
+
+  // ✅ Save to Firebase (ONLY ONCE)
   await push(ref(db, "donations"), data);
+
+  // ✅ SHOW BILL
+  document.getElementById("b-name").innerText = data.donorName;
+  document.getElementById("b-address").innerText = data.address;
+  document.getElementById("b-phone").innerText = data.phone;
+  document.getElementById("b-email").innerText = data.email;
+  document.getElementById("b-amount").innerText = data.amount;
+  document.getElementById("b-purpose").innerText = data.purpose;
+  document.getElementById("b-txn").innerText = data.transactionId;
+  document.getElementById("b-date").innerText = data.date;
+
+  document.getElementById("bill-section").classList.remove("hidden");
+  document.getElementById("bill-section").scrollIntoView({ behavior: "smooth" });
+
+  // ✅ Success popup
   Swal.fire({
   title: "Thank You! 🙏",
-  text: "Your donation has been successfully submitted.",
-  imageUrl: "https://media.tenor.com/kx02y-HTwW8AAAAj/thank-you.gif",
-  imageWidth: 150,
-  imageHeight: 150,
+  text: "Donation receipt generated below.",
   confirmButtonText: "OK",
   confirmButtonColor: "#28a745"
-});
+}).then(() => {
   e.target.reset();
 });
+
+  // ✅ Reset AFTER bill shown
+  e.target.reset();
+});
+
 
 /* -------------------------------------------------------
     DONOR TABLE + SORTING (FULL WORKING)
@@ -484,6 +765,7 @@ function renderDonorTable(list) {
       <td class="border p-2">${d.phone}</td>
       <td class="border p-2">₹${d.amount}</td>
       <td class="border p-2">${d.transactionId}</td>
+<td class="border p-2">${d.purpose || "-"}</td>
       <td class="border p-2">
         <button data-id="${d.id}" class="delete-donation bg-red-500 text-white px-2 py-1 rounded">Delete</button>
       </td>
@@ -577,7 +859,7 @@ document.getElementById("photo-upload-form").addEventListener("submit", (e) => {
 });
 
 /* LOAD PHOTOS */
-onValue(ref(db, "photos"), snapshot => {
+/*onValue(ref(db, "photos"), snapshot => {
   const data = snapshot.val() || {};
   const gallery = document.getElementById("main-gallery");
   gallery.innerHTML = "";
@@ -588,7 +870,7 @@ onValue(ref(db, "photos"), snapshot => {
     img.className = "w-full h-48 object-cover rounded shadow";
     gallery.appendChild(img);
   });
-});
+}); */
 
 /* -------------------------------------------------------
     EVENTS
@@ -806,6 +1088,7 @@ const langData = {
     email: "Email",
     amount: "Amount (₹)",
     transactionId: "UPI Transaction ID",
+    purposeLabel: "Donation Purpose",
     date: "Date",
     submit: "Submit Donation",
     explore: "Explore More",
@@ -831,6 +1114,7 @@ const langData = {
     email: "மின்னஞ்சல்",
     amount: "நன்கொடை தொகை (₹)",
     transactionId: "UPI பரிவர்த்தனை ஐடி",
+    purposeLabel: "நன்கொடையின் நோக்கம்",
     date: "தேதி",
     submit: "நன்கொடை சமர்ப்பிக்கவும்",
     explore: "மேலும் பார்க்க",
@@ -845,6 +1129,41 @@ const langData = {
     instagramBtn: "📸 இன்ஸ்டாகிராம்"
   }
 };
+    // 🔽 Donation Purpose Options (EN + TA)
+const purposeOptions = {
+  en: [
+    "-- Select Purpose --",
+    "Annadhanam",
+    "Temple Renovation",
+    "Festival Special Pooja",
+    "General Donation",
+    "Kumbabishekam Fund"
+  ],
+  ta: [
+    "-- நோக்கத்தை தேர்வு செய்யவும் --",
+    "அன்னதானம்",
+    "கோவில் திருப்பணி",
+    "திருவிழா சிறப்பு பூஜை",
+    "பொது நன்கொடை",
+    "கும்பாபிஷேகம் நிதி"
+  ]
+};
+
+// 🔽 Dropdown load function
+function loadPurposeOptions(lang) {
+  const select = document.getElementById("purpose");
+  if (!select) return;
+
+  select.innerHTML = "";
+
+  purposeOptions[lang].forEach((text, index) => {
+    const option = document.createElement("option");
+    option.value = index === 0 ? "" : text;
+    option.textContent = text;
+    select.appendChild(option);
+  });
+}
+
 
 function applyLanguage(lang) {
   document.documentElement.lang = lang;
@@ -859,10 +1178,87 @@ function applyLanguage(lang) {
   document.getElementById("header-title").textContent = langData[lang].header;
 }
 
-document.getElementById("en-lang-btn").addEventListener("click", () => applyLanguage("en"));
-document.getElementById("ta-lang-btn").addEventListener("click", () => applyLanguage("ta"));
+document.getElementById("en-lang-btn").addEventListener("click", () => {
+  applyLanguage("en");
+  loadPurposeOptions("en");
+});
 
+document.getElementById("ta-lang-btn").addEventListener("click", () => {
+  applyLanguage("ta");
+  loadPurposeOptions("ta");
+});
 applyLanguage("en");
+loadPurposeOptions("en"); // 🔥 THIS LINE WAS MISSING
+
 </script>
+<!-- IMAGE FULLSCREEN MODAL -->
+<div id="image-modal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center">
+  <img id="modal-img" class="max-w-full max-h-full rounded-lg" />
+  <button onclick="closeImage()" class="absolute top-5 right-5 text-white text-3xl">✖</button>
+</div>
+
+<script>
+  function openImage(src) {
+    document.getElementById("modal-img").src = src;
+    document.getElementById("image-modal").classList.remove("hidden");
+  }
+
+  function closeImage() {
+    document.getElementById("image-modal").classList.add("hidden");
+  }
+
+  // ESC key close
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeImage();
+
+   function openVideoByIndex(index) {
+  currentVideoIndex = index;
+  const modalVideo = document.getElementById("modal-video");
+  modalVideo.src = templeVideos[currentVideoIndex];
+  modalVideo.play();
+  document.getElementById("video-modal").classList.remove("hidden");
+}
+
+function closeVideo() {
+  const modalVideo = document.getElementById("modal-video");
+  modalVideo.pause();
+  modalVideo.src = "";
+  document.getElementById("video-modal").classList.add("hidden");
+}
+ 
+  });
+</script>
+
+<!-- ✅ ADD THIS BELOW (NEW SCRIPT BLOCK) -->
+<script>
+function downloadBill() {
+  const bill = document.getElementById("bill-section").innerHTML;
+  const blob = new Blob([bill], { type: "text/html" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "Donation_Receipt.html";
+  link.click();
+}
+</script>
+
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const today = new Date().toISOString().split("T")[0];
+  document.getElementById("donationDate").value = today;
+});
+</script>
+
+  <script>
+window.addEventListener("load", function () {
+  setTimeout(function () {
+    document.getElementById("splash-screen").style.display = "none";
+  }, 400);
+});
+</script>
+
+</body>
+</html>
+
+
 
 
